@@ -4,18 +4,25 @@ import api from "../API";
 const Users = () => {
   const [users, setUsers] = useState(api.users.fetchAll());
   // console.log(users);
+  const ending = (number) => {
+    // const edNumber = Number(String(number)[String(number).length-1]);
+    const edNumber = number > 4 && number < 22 ? number : number % 10;
+    return edNumber === 2 || edNumber === 3 || edNumber === 4 ? "а" : "";
+  };
   const sumUsers = () => {
     return (
       <h1
+        style={{ fontSize: 24 }}
         className={
-          users.length === 0
-            ? "badge bg-danger btn-sm m-2"
-            : "badge bg-primary btn-sm m-2"
+          users.length === 0 ? "badge bg-danger m-2" : "badge bg-primary m-2"
         }
       >
         {users.length === 0
           ? "Никто с тобой не тусанет"
-          : users.length + " человек тусанет с тобой сегодня"}
+          : users.length +
+            " человек" +
+            ending(users.length) +
+            " тусанет с тобой сегодня"}
       </h1>
     );
   };
@@ -41,12 +48,14 @@ const Users = () => {
           <th>{user.profession.name}</th>
           <th>{user.completedMeetings}</th>
           <th>{user.rate}/5</th>
-          <button
-            className="btn btn-primary btn-sm m-2"
-            onClick={() => handelDelete(user._id)}
-          >
-            delete
-          </button>
+          <th>
+            <button
+              className="btn btn-danger btn-sm m-2"
+              onClick={() => handelDelete(user._id)}
+            >
+              delete
+            </button>
+          </th>
         </tr>
       </>
     ));
@@ -55,7 +64,7 @@ const Users = () => {
   return (
     <>
       {sumUsers()}
-      <table class="table">
+      <table className="table">
         <thead>
           <tr>
             <th scope="col">Имя</th>
