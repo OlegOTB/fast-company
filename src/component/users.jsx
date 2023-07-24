@@ -64,7 +64,7 @@ const Users = () => {
   return (
     <>
       {sumUsers()}
-      <table className="table">
+      <table className="table" hidden={users.length === 0 ? "hidden" : ""}>
         <thead>
           <tr>
             <th scope="col">Имя</th>
