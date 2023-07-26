@@ -1,18 +1,11 @@
 import React from "react";
 
 const Bookmark = (props) => {
-  if (props.bookmark)
-    return (
-      <>
-        <i
-          class="bi bi-bookmark-check"
-          onClick={() => props.onMark(props.id)}
-        ></i>
-      </>
-    );
+  const bokmarkClass = () =>
+    props.bookmark ? "bi bi-bookmark-check" : "bi bi-bookmark";
   return (
     <>
-      <i class="bi bi-bookmark" onClick={() => props.onMark(props.id)}></i>
+      <i class={bokmarkClass()} onClick={() => props.onMark(props.id)}></i>
     </>
   );
 };

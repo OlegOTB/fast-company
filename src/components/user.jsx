@@ -15,7 +15,7 @@ const User = (props) => {
         <th>{props.profession.name}</th>
         <th>{props.completedMeetings}</th>
         <th>{props.rate}/5</th>
-        <th>
+        <th style={{ textAlign: "center", verticalAlign: "middle" }}>
           <Bookmark
             key={props._id}
             onMark={props.onMark}
