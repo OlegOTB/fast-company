@@ -1,32 +1,39 @@
 import React from "react";
 import Qualities from "./qualities";
 import Bookmark from "./bookmark";
+import PropTypes from "prop-types";
 
-const User = (props) => {
+const User = ({
+  key,
+  onDelete,
+  onMark,
+  _id,
+  name,
+  profession,
+  qualities,
+  completedMeetings,
+  rate,
+  bookmark
+}) => {
   // console.log(users);
 
   return (
     <>
       <tr>
-        <th>{props.name}</th>
+        <th>{name}</th>
         <th>
-          <Qualities qualities={props.qualities} />
+          <Qualities qualities={qualities} />
         </th>
-        <th>{props.profession.name}</th>
-        <th>{props.completedMeetings}</th>
-        <th>{props.rate}/5</th>
+        <th>{profession.name}</th>
+        <th>{completedMeetings}</th>
+        <th>{rate}/5</th>
         <th style={{ textAlign: "center", verticalAlign: "middle" }}>
-          <Bookmark
-            key={props._id}
-            onMark={props.onMark}
-            id={props._id}
-            bookmark={props.bookmark}
-          />
+          <Bookmark key={_id} onMark={onMark} id={_id} bookmark={bookmark} />
         </th>
         <th>
           <button
             className="btn btn-danger btn-sm m-2"
-            onClick={() => props.onDelete(props._id)}
+            onClick={() => onDelete(_id)}
           >
             delete
           </button>
@@ -34,6 +41,29 @@ const User = (props) => {
       </tr>
     </>
   );
+};
+
+User.propTypes = {
+  key: PropTypes.string.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onMark: PropTypes.func.isRequired,
+  _id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  profession: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired
+  }),
+
+  qualities: PropTypes.shape({
+    qualitie: PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      color: PropTypes.string.isRequired
+    })
+  }),
+  completedMeetings: PropTypes.number.isRequired,
+  rate: PropTypes.number.isRequired,
+  bookmark: PropTypes.bool.isRequired
 };
 
 export default User;

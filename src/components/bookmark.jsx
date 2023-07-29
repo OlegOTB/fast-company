@@ -1,13 +1,20 @@
 import React from "react";
+import PropTypes from "prop-types";
 
-const Bookmark = (props) => {
+const Bookmark = ({ onMark, id, bookmark }) => {
   const bokmarkClass = () =>
-    props.bookmark ? "bi bi-bookmark-check" : "bi bi-bookmark";
+    bookmark ? "bi bi-bookmark-check" : "bi bi-bookmark";
   return (
     <>
-      <i className={bokmarkClass()} onClick={() => props.onMark(props.id)}></i>
+      <i className={bokmarkClass()} onClick={() => onMark(id)}></i>
     </>
   );
+};
+
+Bookmark.propTypes = {
+  onMark: PropTypes.func.isRequired,
+  id: PropTypes.string.isRequired,
+  bookmark: PropTypes.bool.isRequired
 };
 
 export default Bookmark;

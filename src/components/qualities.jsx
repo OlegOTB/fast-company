@@ -1,7 +1,7 @@
 import React from "react";
+import PropTypes from "prop-types";
 
-const Qualities = (props) => {
-  const { qualities } = props;
+const Qualities = ({ qualities }) => {
   const getBageClasses = (color) => {
     return "badge m-2 bg-" + color;
   };
@@ -10,6 +10,16 @@ const Qualities = (props) => {
       {qualitie.name}
     </span>
   ));
+};
+
+Qualities.propTypes = {
+  qualities: PropTypes.shape({
+    qualitie: PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      color: PropTypes.string.isRequired
+    })
+  })
 };
 
 export default Qualities;

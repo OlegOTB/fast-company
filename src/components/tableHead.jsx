@@ -1,9 +1,10 @@
 import React from "react";
+import PropTypes from "prop-types";
 
-const TableHead = (props) => {
+const TableHead = ({ visible }) => {
   return (
     <>
-      <thead hidden={props.visible ? "" : "hidden"}>
+      <thead hidden={visible ? "" : "hidden"}>
         <tr>
           <th scope="col">Имя</th>
           <th scope="col">Качества</th>
@@ -16,6 +17,10 @@ const TableHead = (props) => {
       </thead>
     </>
   );
+};
+
+TableHead.propTypes = {
+  visible: PropTypes.bool.isRequired
 };
 
 export default TableHead;

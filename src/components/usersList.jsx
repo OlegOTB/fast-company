@@ -28,6 +28,9 @@ const UsersList = () => {
   };
 
   const userCrop = paginate(users, currentPage, pageSize);
+  if (userCrop.length === 0 && currentPage > 1) {
+    setCurrentPage(currentPage - 1);
+  }
 
   // const handleReset = () => {
   //   setUsers(api.users.fetchAll());
@@ -37,7 +40,7 @@ const UsersList = () => {
       <SumUser key="sumUser" count={count} />
 
       <table className="table">
-        <TableHead key="tableHead" visible={count > 0 ? true : false} />
+        <TableHead key="tableHead" visible={Boolean(count)} />
         <tbody>
           {userCrop.map((user) => (
             <User
