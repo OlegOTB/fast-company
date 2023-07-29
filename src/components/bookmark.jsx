@@ -5,7 +5,7 @@ const Bookmark = (props) => {
     props.bookmark ? "bi bi-bookmark-check" : "bi bi-bookmark";
   return (
     <>
-      <i class={bokmarkClass()} onClick={() => props.onMark(props.id)}></i>
+      <i className={bokmarkClass()} onClick={() => props.onMark(props.id)}></i>
     </>
   );
 };
