@@ -4,7 +4,6 @@ import Bookmark from "./bookmark";
 import PropTypes from "prop-types";
 
 const User = ({
-  key,
   onDelete,
   onMark,
   _id,
@@ -44,7 +43,6 @@ const User = ({
 };
 
 User.propTypes = {
-  key: PropTypes.string.isRequired,
   onDelete: PropTypes.func.isRequired,
   onMark: PropTypes.func.isRequired,
   _id: PropTypes.string.isRequired,
@@ -54,13 +52,13 @@ User.propTypes = {
     name: PropTypes.string.isRequired
   }),
 
-  qualities: PropTypes.shape({
-    qualitie: PropTypes.shape({
+  qualities: PropTypes.arrayOf(
+    PropTypes.shape({
       _id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       color: PropTypes.string.isRequired
-    })
-  }),
+    }).isRequired
+  ).isRequired,
   completedMeetings: PropTypes.number.isRequired,
   rate: PropTypes.number.isRequired,
   bookmark: PropTypes.bool.isRequired

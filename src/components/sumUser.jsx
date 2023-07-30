@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const SumUser = ({ key, count }) => {
+const SumUser = ({ count }) => {
   const ending = (number) => {
     const edNumber = number > 4 && number < 22 ? number : number % 10;
     return edNumber === 2 || edNumber === 3 || edNumber === 4 ? "а" : "";
@@ -21,7 +21,6 @@ const SumUser = ({ key, count }) => {
 };
 
 SumUser.propTypes = {
-  key: PropTypes.string.isRequired,
   count: PropTypes.number.isRequired
 };
 
