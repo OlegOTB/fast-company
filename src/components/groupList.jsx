@@ -13,16 +13,20 @@ const GroupList = ({
     if (item === selectedItem) buff += " active";
     return buff;
   };
+  const itemObj = (items) => {
+    if (typeof items === "object") return Object.values(items);
+    else return items;
+  };
   return (
     <ul className="list-group">
-      {Object.keys(items).map((item) => (
+      {itemObj(items).map((item) => (
         <li
-          key={items[item][valueProperty]}
-          className={liClass(items[item])}
-          onClick={() => onItemSelect(items[item])}
+          key={item[valueProperty]}
+          className={liClass(item)}
+          onClick={() => onItemSelect(item)}
           role="button"
         >
-          {items[item][contentProperty]}
+          {item[contentProperty]}
         </li>
       ))}
     </ul>
@@ -33,11 +37,11 @@ GroupList.defaultProps = {
   contentProperty: "name"
 };
 GroupList.propTypes = {
-  items: PropTypes.object.isRequired,
+  items: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   valueProperty: PropTypes.string.isRequired,
   contentProperty: PropTypes.string.isRequired,
-  onItemSelect: PropTypes.func.isRequired,
-  selectedItem: PropTypes.object.isRequired
+  onItemSelect: PropTypes.func,
+  selectedItem: PropTypes.object
 };
 
 export default GroupList;

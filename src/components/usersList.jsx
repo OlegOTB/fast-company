@@ -6,10 +6,13 @@ import SumUser from "./sumUser";
 import Pagination from "./paginations";
 import { paginate } from "../utils/paginate";
 import GroupList from "./groupList";
+import _ from "lodash";
 
 const UsersList = () => {
-  const [allUsers, setUsers] = useState(api.users.fetchAll());
-
+  const [allUsers, setUsers] = useState();
+  useEffect(() => {
+    api.users.fetchAll().then((data) => setUsers(data));
+  }, []);
   const pageSize = 2;
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,7 +20,7 @@ const UsersList = () => {
   const [selectedProf, setselectedProf] = useState();
 
   useEffect(() => {
-    api.professions.fetchAllProfessions().then((data) => setProfession(data));
+    api.professions.fetchAll().then((data) => setProfession(data));
   }, []);
   const handelDelete = (id) => {
     const newUsers = allUsers.filter((c) => c._id !== id);
@@ -39,12 +42,16 @@ const UsersList = () => {
     setselectedProf(item);
   };
 
-  const filteredUsers = selectedProf
-    ? allUsers.filter((user) => user.profession === selectedProf)
-    : allUsers;
+  let filteredUsers = [];
+  if (allUsers) {
+    filteredUsers = selectedProf
+      ? allUsers.filter((user) => _.isEqual(user.profession, selectedProf))
+      : allUsers;
+  }
   const count = filteredUsers.length;
+
   const userCrop = paginate(filteredUsers, currentPage, pageSize);
-  if (userCrop.length === 0 && currentPage > 1) {
+  if (userCrop?.length === 0 && currentPage > 1) {
     setCurrentPage(currentPage - 1);
   }
 
