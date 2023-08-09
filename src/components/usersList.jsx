@@ -9,9 +9,16 @@ import _ from "lodash";
 import UserTable from "./usersTable";
 
 const UsersList = () => {
+  const [usersLoad, setUsersLoad] = useState(false);
   const [allUsers, setUsers] = useState();
+
   useEffect(() => {
-    api.users.fetchAll().then((data) => setUsers(data));
+    api.users.fetchAll().then((data) => {
+      setUsers(data);
+      if (data !== null || data !== undefined) {
+        setUsersLoad(true);
+      }
+    });
   }, []);
   const pageSize = 4;
 
@@ -58,6 +65,9 @@ const UsersList = () => {
       : allUsers;
   }
   const count = filteredUsers.length;
+  if (!usersLoad && count === 0) {
+    return "Загрузка пользователей";
+  }
   const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
   const userCrop = paginate(sortedUsers, currentPage, pageSize);
   if (userCrop?.length === 0 && currentPage > 1) {
