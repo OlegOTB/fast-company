@@ -15,7 +15,7 @@ const UserTable = ({
   selectedSort
 }) => {
   const columns = {
-    name: { path: "name", name: "Имя" },
+    name: { path: "name", name: "Имя", anchor: "/Users" },
     qualities: {
       name: "Качества",
       component: (user) => <Qualities qualities={user.qualities} />

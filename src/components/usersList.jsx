@@ -36,6 +36,7 @@ const UsersList = () => {
       const buff = [...prevState];
       const index = buff.findIndex((item) => item._id === id);
       buff[index].bookmark = !buff[index].bookmark;
+      // console.log(index, buff[index].bookmark);
       return buff;
     });
   };
@@ -67,44 +68,46 @@ const UsersList = () => {
     setselectedProf();
   };
   return (
-    <div className="d-flex">
-      {professions && (
-        <div className="d-flex flex-column flex-shrink-0 p-3">
-          <GroupList
-            selectedItem={selectedProf}
-            items={professions}
-            onItemSelect={handleProfessionSelect}
-          />
-          <button
-            className="btn btn-secondary btn-sm  m-2"
-            onClick={clearFilter}
-          >
-            Очистить
-          </button>
-        </div>
-      )}
+    <>
+      <div className="d-flex">
+        {professions && (
+          <div className="d-flex flex-column flex-shrink-0 p-3">
+            <GroupList
+              selectedItem={selectedProf}
+              items={professions}
+              onItemSelect={handleProfessionSelect}
+            />
+            <button
+              className="btn btn-secondary btn-sm  m-2"
+              onClick={clearFilter}
+            >
+              Очистить
+            </button>
+          </div>
+        )}
 
-      <div className="d-flex flex-column">
-        <SumUser key="sumUser" count={count} />
-        <UserTable
-          key="userTable"
-          users={userCrop}
-          onDelete={handelDelete}
-          handelMark={handelMark}
-          count={count}
-          handleSort={handleSort}
-          selectedSort={sortBy}
-        />
-        <div className="d-flex justify-content-center">
-          <Pagination
-            itemsCount={count}
-            pageSize={pageSize}
-            onPageChange={handlePageCange}
-            currentPage={currentPage}
+        <div className="d-flex flex-column">
+          <SumUser key="sumUser" count={count} />
+          <UserTable
+            key="userTable"
+            users={userCrop}
+            onDelete={handelDelete}
+            handelMark={handelMark}
+            count={count}
+            handleSort={handleSort}
+            selectedSort={sortBy}
           />
+          <div className="d-flex justify-content-center">
+            <Pagination
+              itemsCount={count}
+              pageSize={pageSize}
+              onPageChange={handlePageCange}
+              currentPage={currentPage}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

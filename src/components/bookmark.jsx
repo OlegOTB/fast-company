@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 const Bookmark = ({ onMark, id, bookmark }) => {
   const bokmarkClass = () =>
     bookmark ? "bi bi-bookmark-check" : "bi bi-bookmark";
+  // console.log(bookmark);
   return (
     <>
       <i className={bokmarkClass()} onClick={() => onMark(id)}></i>
