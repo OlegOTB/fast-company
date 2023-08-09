@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from "react";
 import api from "../API";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 import CardBody from "./cardBody";
 import Qualities from "./qualities";
 import PropTypes from "prop-types";
 
 const UserCard = ({ id }) => {
-  if (id === undefined) return;
+  // if (id === undefined) return;
+  const history = useHistory();
+  const handleClick = () => {
+    history.push("/Users");
+  };
+
   const [message, setMessage] = useState("Поиск пользователя");
   const [data, setData] = useState();
   useEffect(() => {
@@ -52,13 +58,16 @@ const UserCard = ({ id }) => {
     <>
       <CardBody key={data._id} {...{ data, columns }} />
 
-      <Link
+      {/* <Link
         key={"button-card"}
         to={"/Users"}
         className={"btn btn-secondary btn-sm  m-2"}
       >
         Все пользователи
-      </Link>
+      </Link> */}
+      <button onClick={handleClick} className={"btn btn-secondary btn-sm  m-2"}>
+        Все Пользователи
+      </button>
     </>
   );
 };
