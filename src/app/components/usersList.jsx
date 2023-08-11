@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import api from "../API";
+import api from "../api";
 
 import SumUser from "./sumUser";
 import Pagination from "./paginations";
