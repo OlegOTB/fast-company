@@ -7,6 +7,7 @@ import { paginate } from "../utils/paginate";
 import GroupList from "./groupList";
 import _ from "lodash";
 import UserTable from "./usersTable";
+import TextField from "./textField";
 
 const UsersList = () => {
   const [usersLoad, setUsersLoad] = useState(false);
@@ -30,6 +31,7 @@ const UsersList = () => {
     order: "asc",
     addChar: "up"
   });
+  const [serchString, setSearchString] = useState("");
 
   useEffect(() => {
     api.professions.fetchAll().then((data) => setProfession(data));
@@ -52,10 +54,15 @@ const UsersList = () => {
   };
   const handleProfessionSelect = (item) => {
     setCurrentPage(1);
+    setSearchString("");
     setselectedProf(item);
   };
   const handleSort = (item) => {
     setSortBy(item);
+  };
+  const handleSearchString = ({ target }) => {
+    setSearchString(target.value);
+    if (target.value !== "") setselectedProf();
   };
 
   let filteredUsers = [];
@@ -63,6 +70,10 @@ const UsersList = () => {
     filteredUsers = selectedProf
       ? allUsers.filter((user) => _.isEqual(user.profession, selectedProf))
       : allUsers;
+    filteredUsers =
+      serchString !== ""
+        ? allUsers.filter((user) => user.name.includes(serchString))
+        : filteredUsers;
   }
   const count = filteredUsers.length;
   if (!usersLoad && count === 0) {
@@ -98,6 +109,14 @@ const UsersList = () => {
 
         <div className="d-flex flex-column">
           <SumUser key="sumUser" count={count} />
+          <TextField
+            label="Поиск человека"
+            name="text"
+            value={serchString}
+            onChange={handleSearchString}
+            error={undefined}
+            placeholder="Search..."
+          />
           <UserTable
             key="userTable"
             users={userCrop}
