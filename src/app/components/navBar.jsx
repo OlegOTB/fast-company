@@ -15,13 +15,13 @@ const NavBar = () => {
         </Link>
       </li>
       <li className="nav-item">
-        <a className={"nav-link"} href={"/Users"}>
+        {/* <a className={"nav-link"} href={"/Users"}>
           Users
-        </a>
+        </a> */}
+        <Link key={"link-users"} to={"/Users"} className={"nav-link"}>
+          Users
+        </Link>
       </li>
-      {/* <Link key={"link-users"} to={"/Users"} className={"nav-link"}> */}
-      {/* Users */}
-      {/* </Link> */}
     </nav>
   );
 };
