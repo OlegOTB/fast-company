@@ -1,6 +1,6 @@
 import React from "react";
-import UsersList from "./components/usersList";
-import NavBar from "./components/navBar";
+// import UsersList from "./components/usersList";
+import NavBar from "./components/ui/navBar";
 // import { Route, Switch } from "react-router-dom";
 import { Route, Switch, Redirect } from "react-router-dom";
 import Main from "./layouts/main";
@@ -16,12 +16,12 @@ const App = () => {
       <Switch>
         <Route
           path="/Users/:userId?"
-          // component={(match) => <UserCard id={match.match.params.userId} />}
           component={Users}
+          // component={(match) => <UserCard id={match.match.params.userId} />}
         />
-        <Route exact path="/Users" component={UsersList} />
+        {/* <Route exact path="/Users" component={UsersList} /> */}
         {/* <Route path="/Main" component={Main} /> */}
-        <Route path="/Login" component={Login} />
+        <Route path="/Login:type?" component={Login} />
         {/* <Route path="/404" component={NotFound} /> */}
         {/* <Redirect to="404" /> */}
         <Route path="/" exact component={Main} />

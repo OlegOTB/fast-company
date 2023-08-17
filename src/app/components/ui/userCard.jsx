@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import api from "../api";
-import { useHistory } from "react-router-dom";
-// import { Link } from "react-router-dom";
+import api from "../../api";
+import { useHistory, Link } from "react-router-dom";
 
-import CardBody from "./cardBody";
+import CardBody from "../page/userPage/cardBody";
 import Qualities from "./qualities";
 import PropTypes from "prop-types";
 
@@ -68,6 +67,11 @@ const UserCard = ({ id }) => {
       <button onClick={handleClick} className={"btn btn-secondary btn-sm  m-2"}>
         Все Пользователи
       </button>
+      <Link to={`/Users/${id}/edit`}>
+        <button className={"btn btn-secondary btn-sm  m-2"} type="button">
+          Изменить данные
+        </button>
+      </Link>
     </>
   );
 };

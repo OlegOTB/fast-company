@@ -12,6 +12,10 @@ const TextField = ({
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
+  const handleChange = ({ target }) => {
+    onChange({ name: target.name, value: target.value });
+  };
+
   const toggleShowPassword = () => {
     setShowPassword((prevState) => !prevState);
   };
@@ -27,7 +31,7 @@ const TextField = ({
           id={name}
           name={name}
           value={value}
-          onChange={onChange}
+          onChange={handleChange}
           placeholder={placeholder}
           className={getInputClasses()}
         />
@@ -40,8 +44,8 @@ const TextField = ({
             <i className={"bi bi-eye" + (showPassword ? "-slash" : "")}></i>
           </button>
         )}
+        {error && <div className="invalid-feedback">{error}</div>}
       </div>
-      {error && <div className="ivalid-feedback">{error}</div>}
     </div>
   );
 };
@@ -56,6 +60,6 @@ TextField.propTypes = {
   name: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  error: PropTypes.string.isRequired,
+  error: PropTypes.string,
   placeholder: PropTypes.string
 };

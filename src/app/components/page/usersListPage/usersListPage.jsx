@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
-import api from "../api";
+import api from "../../../api";
 
-import SumUser from "./sumUser";
-import Pagination from "./paginations";
-import { paginate } from "../utils/paginate";
-import GroupList from "./groupList";
+import SumUser from "../../ui/sumUser";
+import Pagination from "../../common/paginations";
+import { paginate } from "../../../utils/paginate";
+import GroupList from "../../common/groupList";
 import _ from "lodash";
-import UserTable from "./usersTable";
-import TextField from "./textField";
+import UserTable from "../../ui/usersTable";
+import TextField from "../../common/form/textField";
 
-const UsersList = () => {
+const UsersListPage = () => {
   const [usersLoad, setUsersLoad] = useState(false);
   const [allUsers, setUsers] = useState();
 
@@ -60,7 +60,7 @@ const UsersList = () => {
   const handleSort = (item) => {
     setSortBy(item);
   };
-  const handleSearchString = ({ target }) => {
+  const handleSearchString = (target) => {
     setSearchString(target.value);
     if (target.value !== "") setselectedProf();
   };
@@ -72,7 +72,9 @@ const UsersList = () => {
       : allUsers;
     filteredUsers =
       serchString !== ""
-        ? allUsers.filter((user) => user.name.includes(serchString))
+        ? allUsers.filter((user) =>
+            user.name.toLowerCase().includes(serchString.toLowerCase())
+          )
         : filteredUsers;
   }
   const count = filteredUsers.length;
@@ -111,7 +113,7 @@ const UsersList = () => {
           <SumUser key="sumUser" count={count} />
           <TextField
             label="Поиск человека"
-            name="text"
+            name="serchString"
             value={serchString}
             onChange={handleSearchString}
             error={undefined}
@@ -140,4 +142,4 @@ const UsersList = () => {
   );
 };
 
-export default UsersList;
+export default UsersListPage;
