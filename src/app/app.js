@@ -14,6 +14,7 @@ const App = () => {
     <div>
       <NavBar />
       <Switch>
+        <Route path="/Users/:userId?/:edit?" component={Users} />
         <Route
           path="/Users/:userId?"
           component={Users}

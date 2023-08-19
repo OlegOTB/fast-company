@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
 import TextField from "../common/form/textField";
 import { validator } from "../../utils/validator";
 import api from "../../api";
@@ -7,10 +6,8 @@ import SelectField from "../common/form/selectField";
 import RadioField from "../common/form/radioField";
 import MultiSelectField from "../common/form/multiSelectField";
 import CheckBoxField from "../common/form/checkBoxField";
-import PropTypes from "prop-types";
 
-const RegisterForm = ({ id }) => {
-  // const readEdit = useHistory();
+const RegisterForm = () => {
   const [qualities, setQualities] = useState({});
   const [data, setData] = useState({
     email: "",
@@ -22,9 +19,6 @@ const RegisterForm = ({ id }) => {
   });
   const [errors, setErrors] = useState({});
   const [professions, setProfession] = useState();
-  const [message, setMessage] = useState("Получение данных пользователя");
-  const [user, setUser] = useState();
-  const history = useHistory();
 
   const validatorConfig = {
     email: {
@@ -61,33 +55,6 @@ const RegisterForm = ({ id }) => {
     setErrors(errors);
     return Object.keys(errors).length !== 0;
   };
-  const setUserQualities = (arr) => {
-    const buff = [];
-    arr.forEach((elem) => {
-      buff.push({ label: elem.name, value: elem._id });
-      // console.log("buff", buff);
-    });
-    return buff;
-  };
-  if (id) {
-    useEffect(() => {
-      api.users.getById(id).then((user) => {
-        setUser(user);
-        if (user === null || user === undefined) {
-          setMessage("Пользователь не найден");
-        } else {
-          data.email = user.email;
-          data.password = "";
-          data.profession = user.profession._id;
-          data.sex = user.sex;
-          data.qualities = setUserQualities(user.qualities);
-          data.licence = true;
-          setData(data);
-          validate();
-        }
-      });
-    }, []);
-  }
   useEffect(() => {
     validate();
   }, [data]);
@@ -95,10 +62,6 @@ const RegisterForm = ({ id }) => {
     api.professions.fetchAll().then((data) => setProfession(data));
     api.qualities.fetchAll().then((data) => setQualities(data));
   }, []);
-
-  if (id && (user === null || user === undefined)) {
-    return message;
-  }
 
   const isValid = Object.keys(errors).length === 0;
 
@@ -134,33 +97,21 @@ const RegisterForm = ({ id }) => {
   const handleChange = (target) => {
     setData((prevState) => ({ ...prevState, [target.name]: target.value }));
   };
-  const handelSubmit = (e) => {
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const isValid = validate();
-    if (!isValid) return;
-    console.log(isValid);
-    // const { profession, qualities } = data;
-    // console.log({
-    //   ...data,
-    //   profession: getProfessionById(profession),
-    //   qualities: getQualities(qualities)
-    // });
-  };
-  const handleClick = () => {
     const isValid = validate();
     if (isValid) return;
     const { profession, qualities } = data;
-    user.email = data.email;
-    user.sex = data.sex;
-    user.profession = getProfessionById(profession);
-    user.qualities = getQualities(qualities);
-    setUser(user);
-    api.users.update(id, user);
-    history.push("/Users");
+    console.log({
+      ...data,
+      profession: getProfessionById(profession),
+      qualities: getQualities(qualities)
+    });
   };
 
   return (
-    <form onSubmit={handelSubmit}>
+    <form onSubmit={handleSubmit}>
       <TextField
         label="Электронная почта"
         name="email"
@@ -214,32 +165,15 @@ const RegisterForm = ({ id }) => {
       >
         Подтвердить <a>лицензионное соглашение</a>
       </CheckBoxField>
-      {id ? (
-        <button
-          type="button"
-          onClick={() => handleClick()}
-          disabled={!isValid}
-          className="btn btn-primary w-100 mx-auto"
-        >
-          Сохранить изменения
-        </button>
-      ) : (
-        <button
-          type="submit"
-          disabled={!isValid}
-          className="btn btn-primary w-100 mx-auto"
-        >
-          Отправить
-        </button>
-      )}
+      <button
+        type="submit"
+        disabled={!isValid}
+        className="btn btn-primary w-100 mx-auto"
+      >
+        Отправить
+      </button>
     </form>
   );
 };
 
 export default RegisterForm;
-
-RegisterForm.defaultProps = { id: "" };
-
-RegisterForm.propTypes = {
-  id: PropTypes.string
-};
