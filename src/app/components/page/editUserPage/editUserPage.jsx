@@ -134,6 +134,7 @@ const EditUserPage = ({ id }) => {
     const isValid = validate();
     if (isValid) return;
     const { profession, qualities } = data;
+    user.name = data.name;
     user.email = data.email;
     user.sex = data.sex;
     user.profession = getProfessionById(profession);
