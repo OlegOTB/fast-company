@@ -18,6 +18,7 @@ const EditUserPage = ({ id }) => {
     sex: "male",
     qualities: []
   });
+
   const [errors, setErrors] = useState({});
   const [professions, setProfession] = useState();
   const [message, setMessage] = useState("Получение данных пользователя");
