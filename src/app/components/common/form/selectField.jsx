@@ -25,9 +25,11 @@ const SelectField = ({
   };
   return (
     <div className="mb-4">
-      <label htmlFor={name} className="form-label">
-        {label}
-      </label>
+      {label !== "" && (
+        <label htmlFor={name} className="form-label">
+          {label}
+        </label>
+      )}
       <select
         className={getInputClasses()}
         id={name}
