@@ -56,7 +56,7 @@ const UsersListComments = ({ pageId }) => {
             userId={comment.userId}
             pageId={comment.pageId}
             content={comment.content}
-            createdAt={comment.created_at}
+            createdAt={Number(comment.created_at)}
           />
         ))}
       </div>

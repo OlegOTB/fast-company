@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { displayDate } from "../../../utils/displayDate";
 
 const UserComment = ({
   name,
@@ -26,8 +27,10 @@ const UserComment = ({
               <div className="mb-4">
                 <div className="d-flex justify-content-between align-items-center">
                   <p className="mb-1">
-                    {name}
-                    <span className="small">{createdAt} назад</span>
+                    {name}{" "}
+                    <span className="small">
+                      {displayDate(createdAt)} назад
+                    </span>
                   </p>
                   <button
                     className="btn btn-sm text-primary d-flex align-items-center"
@@ -53,7 +56,7 @@ UserComment.propTypes = {
   userId: PropTypes.string.isRequired,
   pageId: PropTypes.string.isRequired,
   content: PropTypes.string.isRequired,
-  createdAt: PropTypes.string.isRequired
+  createdAt: PropTypes.number.isRequired
 };
 
 export default UserComment;
