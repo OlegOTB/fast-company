@@ -28,9 +28,7 @@ const UserComment = ({
                 <div className="d-flex justify-content-between align-items-center">
                   <p className="mb-1">
                     {name}{" "}
-                    <span className="small">
-                      {displayDate(createdAt)} назад
-                    </span>
+                    <span className="small">{displayDate(createdAt)}</span>
                   </p>
                   <button
                     className="btn btn-sm text-primary d-flex align-items-center"
