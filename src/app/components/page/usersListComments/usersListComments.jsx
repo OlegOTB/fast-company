@@ -4,11 +4,28 @@ import _ from "lodash";
 import PropTypes from "prop-types";
 import UserComment from "../../ui/userComment/userComment";
 
-const UsersListComments = ({ pageId }) => {
+const UsersListComments = ({ pageId, newComment }) => {
   const [commentsLoad, setCommentsLoad] = useState(false);
   const [comments, setComments] = useState();
   const [allUsers, setUsers] = useState();
 
+  if (
+    newComment !== undefined &&
+    newComment !== null &&
+    comments !== undefined &&
+    comments !== null
+  ) {
+    if (
+      comments.find(
+        (c) =>
+          c._id === newComment._id &&
+          c.userId === newComment.userId &&
+          c.pageId === newComment.pageId
+      ) === undefined
+    ) {
+      comments.push(newComment);
+    }
+  }
   useEffect(() => {
     api.users.fetchAll().then((data) => setUsers(data));
   }, []);
@@ -65,7 +82,8 @@ const UsersListComments = ({ pageId }) => {
 };
 
 UsersListComments.propTypes = {
-  pageId: PropTypes.string.isRequired
+  pageId: PropTypes.string.isRequired,
+  newComment: PropTypes.object
 };
 
 export default UsersListComments;
