@@ -51,8 +51,10 @@ const UsersListComments = ({ pageId, newComment }) => {
     const newComments = comments.filter(
       (c) => !(c._id === _id && c.userId === userId && c.pageId === pageId)
     );
-    // setComments(newComments);
-    api.comments.remove(_id).then(() => setComments(newComments));
+    api.comments.remove(_id).then(() => {
+      if (newComments.length === 0) setComments(null);
+      else setComments(newComments);
+    });
   };
 
   if (!commentsLoad) {
