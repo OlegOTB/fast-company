@@ -22,7 +22,7 @@ const CommentsCard = ({ pageId }) => {
       setComments(data);
       if (data !== null || data !== undefined) {
         setCommentsLoad(true);
-        setComments(_.orderBy(data, ["created_at"], ["asc"]));
+        setComments(_.orderBy(data, ["created_at"], ["desc"]));
       }
     });
   }, []);
@@ -44,7 +44,7 @@ const CommentsCard = ({ pageId }) => {
       })
       .then((data) => {
         data.name = allUsers.find((buff) => buff._id === comment.userId).name;
-        setComments(comments.concat([data]));
+        setComments([data].concat(comments));
       });
   };
 
