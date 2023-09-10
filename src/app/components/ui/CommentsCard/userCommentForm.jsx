@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from "react";
-import api from "../../api";
-import SelectField from "../common/form/selectField";
+import SelectField from "../../common/form/selectField";
 import PropTypes from "prop-types";
 
-const UserCommentForm = ({ id, allUsers, OnNewComment }) => {
+const UserCommentForm = ({ id, allUsers, OnAddComment }) => {
   const [comment, setComment] = useState({
-    _id: Math.random().toString(36).substr(2, 9),
     userId: "",
     pageId: id,
-    content: "",
-    created_at: ""
+    content: ""
   });
   const [isValid, setIsValid] = useState(false);
   useEffect(() => {
@@ -31,25 +28,14 @@ const UserCommentForm = ({ id, allUsers, OnNewComment }) => {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    api.comments
-      .add({
-        userId: comment.userId,
-        pageId: comment.pageId,
-        content: comment.content
-      })
-      .then((data) => {
-        OnNewComment(data);
-        setComment(() => ({
-          _id: Math.random().toString(36).substr(2, 9),
-          userId: "",
-          pageId: id,
-          content: "",
-          created_at: ""
-        }));
-        setIsValid(false);
-      });
+    OnAddComment(comment);
+    setComment(() => ({
+      userId: "",
+      pageId: id,
+      content: ""
+    }));
+    setIsValid(false);
   };
-
   return (
     <form onSubmit={handleSubmit}>
       <div className="card mb-2">
@@ -58,7 +44,7 @@ const UserCommentForm = ({ id, allUsers, OnNewComment }) => {
             <h2>Новый комментарий</h2>
             <div className="mb-4">
               <SelectField
-                key="userIdCard"
+                key={id}
                 label=""
                 name="userId"
                 value={comment.userId}
@@ -97,7 +83,7 @@ const UserCommentForm = ({ id, allUsers, OnNewComment }) => {
 UserCommentForm.propTypes = {
   id: PropTypes.string,
   allUsers: PropTypes.array,
-  OnNewComment: PropTypes.func.isRequired
+  OnAddComment: PropTypes.func.isRequired
 };
 
 export default UserCommentForm;

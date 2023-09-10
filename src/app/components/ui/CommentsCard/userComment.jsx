@@ -2,15 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { displayDate } from "../../../utils/displayDate";
 
-const UserComment = ({
-  name,
-  onDelete,
-  _id,
-  userId,
-  pageId,
-  content,
-  createdAt
-}) => {
+const UserComment = ({ name, onDelete, _id, content, createdAt }) => {
   return (
     <div className="bg-light card-body mb-3">
       <div className="row">
@@ -32,7 +24,7 @@ const UserComment = ({
                   </p>
                   <button
                     className="btn btn-sm text-primary d-flex align-items-center"
-                    onClick={() => onDelete(_id, userId, pageId)}
+                    onClick={() => onDelete(_id)}
                   >
                     <i className="bi bi-x-lg"></i>
                   </button>
@@ -51,8 +43,6 @@ UserComment.propTypes = {
   name: PropTypes.string,
   onDelete: PropTypes.func.isRequired,
   _id: PropTypes.string.isRequired,
-  userId: PropTypes.string.isRequired,
-  pageId: PropTypes.string.isRequired,
   content: PropTypes.string.isRequired,
   createdAt: PropTypes.number.isRequired
 };
