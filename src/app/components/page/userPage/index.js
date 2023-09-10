@@ -1,4 +1,3 @@
-import UserCard from "../../ui/userCard";
-export default UserCard;
-import CardBody from "./cardBody";
-export { CardBody };
+import UserPage from "./userPage";
+
+export default UserPage;

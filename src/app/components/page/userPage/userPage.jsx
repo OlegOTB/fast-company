@@ -1,36 +1,19 @@
 import React, { useState, useEffect } from "react";
-import api from "../../api";
+import api from "../../../api";
 import { useHistory } from "react-router-dom";
 
-import { cardBody } from "../../utils/cardBody";
-import Qualities from "./qualities";
-import UsersListComments from "../page/usersListComments/usersListComments";
-import InfoCard from "./infoCard";
-import UserCommentForm from "./userCommentForm";
+import { cardBody } from "../../../utils/cardBody";
+import Qualities from "../../ui/qualities";
+import InfoCard from "../../ui/infoCard";
+import CommentsCard from "../../ui/CommentsCard/commentsCard";
 import PropTypes from "prop-types";
 
-const UserCard = ({ id }) => {
+const UserPage = ({ id }) => {
   // if (id === undefined) return;
   const history = useHistory();
   const handleClick = () => {
     history.push("/Users");
   };
-  const [allUsers, setUsers] = useState();
-  const [newComment, setNewComment] = useState(null);
-
-  const handleNewComment = (comment) => {
-    setNewComment(comment);
-  };
-
-  useEffect(() => {
-    api.users.fetchAll().then((data) =>
-      setUsers(
-        data.map((item) => {
-          return { ...item, value: item._id };
-        })
-      )
-    );
-  }, []);
 
   const [message, setMessage] = useState("Поиск пользователя");
   const [data, setData] = useState();
@@ -71,14 +54,7 @@ const UserCard = ({ id }) => {
       <div className="container">
         <div className="row gutters-sm">
           <InfoCard id={id} objUser={objUser} />
-          <div className="col-md-8">
-            <UserCommentForm
-              id={id}
-              allUsers={allUsers}
-              OnNewComment={handleNewComment}
-            />
-            <UsersListComments pageId={id} newComment={newComment} />
-          </div>
+          <CommentsCard pageId={id} />
         </div>
       </div>
       <button onClick={handleClick} className={"btn btn-secondary btn-sm  m-2"}>
@@ -88,8 +64,8 @@ const UserCard = ({ id }) => {
   );
 };
 
-UserCard.propTypes = {
+UserPage.propTypes = {
   id: PropTypes.string
 };
 
-export default UserCard;
+export default UserPage;

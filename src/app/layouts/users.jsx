@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import UserCard from "../components/ui/userCard";
+import UserPage from "../components/page/userPage/userPage";
 import UsersListPage from "../components/page/usersListPage";
 import EditUserPage from "../components/page/editUserPage";
 
@@ -13,7 +13,7 @@ const Users = () => {
         edit ? (
           <EditUserPage id={userId} />
         ) : (
-          <UserCard id={userId} />
+          <UserPage id={userId} />
         )
       ) : (
         <UsersListPage />
