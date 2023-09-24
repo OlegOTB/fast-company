@@ -6,22 +6,27 @@ import UsersListComments from "./usersListComments";
 import PropTypes from "prop-types";
 
 const CommentsCard = ({ pageId }) => {
-  const [commentsLoad, setCommentsLoad] = useState(false);
-  const [comments, setComments] = useState();
-  const [allUsers, setUsers] = useState();
+  // const [commentsLoad, setCommentsLoad] = useState(false);
+  const [comments, setComments] = useState(null);
+  // const [allUsersLoad, setAllUsersLoad] = useState(false);
+  const [dataValid, setDataValid] = useState(false);
+  const [allUsers, setUsers] = useState(null);
 
   useEffect(() => {
-    api.users.fetchAll().then((data) =>
+    api.users.fetchAll().then((data) => {
       setUsers(
         data.map((item) => {
           return { ...item, value: item._id };
         })
-      )
-    );
+      );
+      if (data !== null || data !== undefined) {
+        // setAllUsersLoad(true);
+      }
+    });
     api.comments.fetchCommentsForUser(pageId).then((data) => {
       setComments(data);
       if (data !== null || data !== undefined) {
-        setCommentsLoad(true);
+        // setCommentsLoad(true);
         setComments(_.orderBy(data, ["created_at"], ["desc"]));
       }
     });
@@ -55,25 +60,29 @@ const CommentsCard = ({ pageId }) => {
       setComments(comments.filter((c) => !(c._id === _id)));
     });
   };
-
-  if (comments && allUsers) {
+  if (comments && allUsers && !dataValid) {
     comments.forEach(
       (item) =>
         (item.name = allUsers.find((buff) => buff._id === item.userId).name)
     );
+    setDataValid(true);
   }
-  if (!commentsLoad) {
-    return "Загрузка комментариев";
-  }
-
   return (
     <div className="col-md-8">
-      <UserCommentForm
-        id={pageId}
-        allUsers={allUsers}
-        OnAddComment={handelAddComment}
-      />
-      <UsersListComments comments={comments} handelDelete={handelDelete} />
+      {allUsers ? (
+        <UserCommentForm
+          id={pageId}
+          allUsers={allUsers}
+          OnAddComment={handelAddComment}
+        />
+      ) : (
+        <h5>Загрузка пользователей...</h5>
+      )}
+      {comments ? (
+        <UsersListComments comments={comments} handelDelete={handelDelete} />
+      ) : (
+        <h5>Загрузка комментариев...</h5>
+      )}
     </div>
   );
 };
