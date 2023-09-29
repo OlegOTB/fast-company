@@ -8,19 +8,22 @@ import GroupList from "../../common/groupList";
 import _ from "lodash";
 import UserTable from "../../ui/usersTable";
 import TextField from "../../common/form/textField";
+import { useUser } from "../../../hooks/useUsers";
 
 const UsersListPage = () => {
-  const [usersLoad, setUsersLoad] = useState(false);
-  const [allUsers, setUsers] = useState();
+  const { users } = useUser();
+  const [, setUsersRerender] = useState(false);
+  // const [usersLoad, setUsersLoad] = useState(false);
+  // const [allUsers, setUsers] = useState();
 
-  useEffect(() => {
-    api.users.fetchAll().then((data) => {
-      setUsers(data);
-      if (data !== null || data !== undefined) {
-        setUsersLoad(true);
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   api.users.fetchAll().then((data) => {
+  //     setUsers(data);
+  //     if (data !== null || data !== undefined) {
+  //       setUsersLoad(true);
+  //     }
+  //   });
+  // }, []);
   const pageSize = 4;
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -37,17 +40,22 @@ const UsersListPage = () => {
     api.professions.fetchAll().then((data) => setProfession(data));
   }, []);
   const handelDelete = (id) => {
-    const newUsers = allUsers.filter((c) => c._id !== id);
-    setUsers(newUsers);
+    // const newUsers = users.filter((c) => c._id !== id);
+    // const newUsers = allUsers.filter((c) => c._id !== id);
+    // setUsers(newUsers);
   };
   const handelMark = (id) => {
-    setUsers((prevState) => {
-      const buff = [...prevState];
-      const index = buff.findIndex((item) => item._id === id);
-      buff[index].bookmark = !buff[index].bookmark;
-      // console.log(index, buff[index].bookmark);
-      return buff;
-    });
+    const index = users.findIndex((item) => item._id === id);
+    users[index].bookmark = !users[index].bookmark;
+    setUsersRerender((prevState) => !prevState);
+    return users;
+    // setUsers((prevState) => {
+    //   const buff = [...prevState];
+    //   const index = buff.findIndex((item) => item._id === id);
+    //   buff[index].bookmark = !buff[index].bookmark;
+    //   // console.log(index, buff[index].bookmark);
+    //   return buff;
+    // });
   };
   const handlePageCange = (pageIndex) => {
     setCurrentPage(pageIndex);
@@ -66,19 +74,31 @@ const UsersListPage = () => {
   };
 
   let filteredUsers = [];
-  if (allUsers) {
+  // if (allUsers) {
+  //   filteredUsers = selectedProf
+  //     ? allUsers.filter((user) => _.isEqual(user.profession, selectedProf))
+  //     : allUsers;
+  //   filteredUsers =
+  //     serchString !== ""
+  //       ? allUsers.filter((user) =>
+  //           user.name.toLowerCase().includes(serchString.toLowerCase())
+  //         )
+  //       : filteredUsers;
+  // }
+  if (users) {
     filteredUsers = selectedProf
-      ? allUsers.filter((user) => _.isEqual(user.profession, selectedProf))
-      : allUsers;
+      ? users.filter((user) => _.isEqual(user.profession, selectedProf))
+      : users;
     filteredUsers =
       serchString !== ""
-        ? allUsers.filter((user) =>
+        ? users.filter((user) =>
             user.name.toLowerCase().includes(serchString.toLowerCase())
           )
         : filteredUsers;
   }
+
   const count = filteredUsers.length;
-  if (!usersLoad && count === 0) {
+  if (count === 0) {
     return "Загрузка пользователей";
   }
   const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
@@ -90,6 +110,7 @@ const UsersListPage = () => {
   const clearFilter = () => {
     setselectedProf();
   };
+  console.log(userCrop);
   return (
     <>
       <div className="d-flex">

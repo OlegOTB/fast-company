@@ -1,25 +1,29 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { useQualities } from "../../../hooks/useQualities";
 
-const Qualities = ({ qualities }) => {
+const Qualities = ({ qualitiesId }) => {
+  const { isLoading, getQualities } = useQualities();
   const getBageClasses = (color) => {
     return "badge m-2 bg-" + color;
   };
-  return qualities.map((qualitie) => (
-    <span key={qualitie._id} className={getBageClasses(qualitie.color)}>
-      {qualitie.name}
-    </span>
-  ));
+  if (!isLoading) {
+    return qualitiesId.map((id) => {
+      // <span key={qualitie._id} className={getBageClasses(qualitie.color)}>
+      //   {qualitie.name}
+      // </span>
+      const qualitie = getQualities(id);
+      return (
+        <span key={id} className={getBageClasses(qualitie.color)}>
+          {qualitie.name}
+        </span>
+      );
+    });
+  } else return "loading...";
 };
 
 Qualities.propTypes = {
-  qualities: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      color: PropTypes.string.isRequired
-    }).isRequired
-  ).isRequired
+  qualitiesId: PropTypes.array.isRequired
 };
 
 export default Qualities;
