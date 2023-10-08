@@ -110,7 +110,7 @@ const UsersListPage = () => {
   const clearFilter = () => {
     setselectedProf();
   };
-  console.log(userCrop);
+  // console.log(userCrop);
   return (
     <>
       <div className="d-flex">

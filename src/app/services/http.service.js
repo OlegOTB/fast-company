@@ -1,12 +1,36 @@
 import axios from "axios";
 // import logger from "./log.service";
 import { toast } from "react-toastify";
-import config from "../config.json";
+import configFile from "../config.json";
 
-axios.defaults.baseURL = config.API_END_POINT;
+const http = axios.create({
+  baseURL: configFile.API_END_POINT
+});
+console.log(configFile.API_END_POINT);
+http.interceptors.request.use(
+  function (config) {
+    if (configFile.isFireBase) {
+      const containSlash = /\/$/gi.test(config.url);
+      config.url =
+        (containSlash ? config.url.slice(0, -1) : config.url) + ".json";
+    }
+    return config;
+  },
+  function (error) {
+    return Promise.reject(error);
+  }
+);
 
-axios.interceptors.response.use(
-  (res) => res,
+function transformData(data) {
+  return data ? Object.keys(data).map((key) => ({ ...data[key] })) : [];
+}
+http.interceptors.response.use(
+  (res) => {
+    if (configFile.isFireBase) {
+      res.data = { content: transformData(res.data) };
+    }
+    return res;
+  },
   function (error) {
     // console.log("interceptors");
     const expectedErrors =
@@ -23,9 +47,9 @@ axios.interceptors.response.use(
 );
 
 const httpService = {
-  get: axios.get,
-  post: axios.post,
-  put: axios.put,
-  delete: axios.delete
+  get: http.get,
+  post: http.post,
+  put: http.put,
+  delete: http.delete
 };
 export default httpService;
