@@ -24,6 +24,7 @@ const RegisterForm = () => {
     password: "",
     profession: "",
     sex: "",
+    name: "",
     qualities: [],
     licence: false
   });
@@ -43,6 +44,10 @@ const RegisterForm = () => {
       isEmail: {
         message: "Email введен некорректно"
       }
+    },
+    name: {
+      isRequired: { message: "Имя пользователя обязательно для заполнения" },
+      min: { message: "Минимальная длина имени 3 символа", value: 3 }
     },
     password: {
       isRequired: { message: "Поле пароль обязательно для заполнения" },
@@ -75,42 +80,9 @@ const RegisterForm = () => {
   useEffect(() => {
     validate();
   }, [data]);
-  // useEffect(() => {
-  //   api.professions.fetchAll().then((data) => setProfession(data));
-  //   api.qualities.fetchAll().then((data) => setQualities(data));
-  // }, []);
 
   const isValid = Object.keys(errors).length === 0;
 
-  // const getProfessionById = (id) => {
-  // /* for (const prof of professions) {
-  //      if (prof.value === id) {
-  //        return { _id: prof.value, name: prof.label };
-  //      }
-  //    }*/
-  //   const buff = Object.keys(professions).find(
-  //     (prof) => professions[prof]._id === id
-  //   );
-  //   return { ...professions[buff] };
-  // };
-  // const getQualities = (elements) => {
-  //   const qualitiesArray = [];
-  //   for (const elem of elements) {
-  //     for (const quality in qualities) {
-  //       // if (elem.value === qualities[quality].value) {
-  //       if (elem.value === qualities[quality]._id) {
-  //         qualitiesArray.push({
-  //           // _id: qualities[quality].value,
-  //           // name: qualities[quality].label,
-  //           _id: qualities[quality]._id,
-  //           name: qualities[quality].name,
-  //           color: qualities[quality].color
-  //         });
-  //       }
-  //     }
-  //   }
-  //   return qualitiesArray;
-  // };
   const handleChange = (target) => {
     setData((prevState) => ({ ...prevState, [target.name]: target.value }));
     // console.log(target.name, target.value);
@@ -140,6 +112,13 @@ const RegisterForm = () => {
         value={data.email}
         onChange={handleChange}
         error={errors.email}
+      />
+      <TextField
+        label="Имя пользователя"
+        name="name"
+        value={data.name}
+        onChange={handleChange}
+        error={errors.name}
       />
       {/* <br /> */}
       <TextField

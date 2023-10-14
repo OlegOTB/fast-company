@@ -1,38 +1,42 @@
-import React, { useState, useEffect } from "react";
-import SelectField from "../../common/form/selectField";
-import PropTypes from "prop-types";
+import React, { useState } from "react";
+// import PropTypes from "prop-types";
+import { useComments } from "../../../hooks/useComments";
+import { useAuth } from "../../../hooks/useAuth";
+import { nanoid } from "nanoid";
+import { useParams } from "react-router-dom";
 
-const UserCommentForm = ({ id, allUsers, OnAddComment }) => {
+const UserCommentForm = () => {
+  const { userId } = useParams();
+  // console.log(userId);
+  const { currentUser } = useAuth();
   const [comment, setComment] = useState({
-    userId: "",
-    pageId: id,
-    content: ""
+    _id: nanoid(),
+    userId: currentUser._id,
+    pageId: userId,
+    content: "",
+    created_at: ""
   });
   const [isValid, setIsValid] = useState(false);
-  useEffect(() => {
-    if (comment.content && comment.userId) setIsValid(true);
-  }, [comment]);
+  const { createComment } = useComments();
 
-  const handleChange = (target) => {
-    setComment((prevState) => ({
-      ...prevState,
-      [target.name]: target.value
-    }));
-  };
   const handleChangeTextArea = ({ target }) => {
     setComment((prevState) => ({
       ...prevState,
       [target.name]: target.value
     }));
-    if (!target.value) setIsValid(false);
+    if (target.value) {
+      setIsValid(true);
+    } else setIsValid(false);
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    OnAddComment(comment);
+    createComment(comment);
     setComment(() => ({
-      userId: "",
-      pageId: id,
-      content: ""
+      _id: nanoid(),
+      userId: currentUser._id,
+      pageId: userId,
+      content: "",
+      created_at: ""
     }));
     setIsValid(false);
   };
@@ -42,18 +46,6 @@ const UserCommentForm = ({ id, allUsers, OnAddComment }) => {
         <div className="card-body">
           <div>
             <h2>Новый комментарий</h2>
-            <div className="mb-4">
-              <SelectField
-                key={id}
-                label=""
-                name="userId"
-                value={comment.userId}
-                onChange={handleChange}
-                defaultOption="Выберите пользователя"
-                options={allUsers}
-                error={null}
-              />
-            </div>
             <div className="mb-4">
               <label
                 htmlFor="exampleFormControlTextarea1"
@@ -80,10 +72,10 @@ const UserCommentForm = ({ id, allUsers, OnAddComment }) => {
   );
 };
 
-UserCommentForm.propTypes = {
-  id: PropTypes.string,
-  allUsers: PropTypes.array,
-  OnAddComment: PropTypes.func.isRequired
-};
+// UserCommentForm.propTypes = {
+//   id: PropTypes.string,
+//   allUsers: PropTypes.array,
+//   OnAddComment: PropTypes.func.isRequired
+// };
 
 export default UserCommentForm;

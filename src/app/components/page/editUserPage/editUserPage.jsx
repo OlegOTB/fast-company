@@ -2,30 +2,73 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import TextField from "../../common/form/textField";
 import { validator } from "../../../utils/validator";
-import api from "../../../api";
 import SelectField from "../../common/form/selectField";
 import RadioField from "../../common/form/radioField";
 import MultiSelectField from "../../common/form/multiSelectField";
 import PropTypes from "prop-types";
+import { useQualities } from "../../../hooks/useQualities";
+import { useProfessions } from "../../../hooks/useProfession";
+import { useUser } from "../../../hooks/useUsers";
+import { useAuth } from "../../../hooks/useAuth";
 
 const EditUserPage = ({ id }) => {
   if (!id) return;
-  const [qualities, setQualities] = useState({});
+  const { getUserById } = useUser();
+  const user = getUserById(id);
+  if (user === null || user === undefined) {
+    return <h5>Пользователь не найден</h5>;
+  }
+  // console.log(user);
+
+  const history = useHistory();
+  const { currentUser, updateUser } = useAuth();
+  if (currentUser._id !== id) {
+    history.push(`/Users/${currentUser._id}/edit`);
+  }
+  const setUserQualities = (arr) => {
+    const buff = [];
+    arr.forEach((elem) => {
+      buff.push({
+        label: getQualities(elem).name,
+        value: getQualities(elem)._id
+      });
+      // console.log("buff", buff);
+    });
+    return buff;
+  };
+  const {
+    isLoading: isLoadingQual,
+    qualities: qual,
+    getQualities
+  } = useQualities();
+  const qualities = !isLoadingQual
+    ? qual?.map((q) => {
+        return { label: q.name, value: q._id };
+      })
+    : [];
+  const [errors, setErrors] = useState({});
+  const [isLoading, setLoadingUserData] = useState(false);
+  const { isLoading: isLoadingProf, professions: prof } = useProfessions();
+  // console.log(prof);
+  const professions = !isLoadingProf
+    ? prof?.map((p) => {
+        return { label: p.name, value: p._id };
+      })
+    : {};
+
   const [data, setData] = useState({
     name: "",
     email: "",
     profession: "",
-    sex: "male",
+    sex: "",
     qualities: []
   });
 
-  const [errors, setErrors] = useState({});
-  const [professions, setProfession] = useState();
-  const [message, setMessage] = useState("Получение данных пользователя");
-  const [user, setUser] = useState();
-  const history = useHistory();
-
   const validatorConfig = {
+    name: {
+      isRequired: { message: "Имя пользователя обязательно для заполнения" },
+      min: { message: "Минимальная длина имени 3 символа", value: 3 }
+    },
     email: {
       isRequired: { message: "Электронная почта обязательня для заполнения" },
       isEmail: {
@@ -60,91 +103,49 @@ const EditUserPage = ({ id }) => {
     setErrors(errors);
     return Object.keys(errors).length !== 0;
   };
-  const setUserQualities = (arr) => {
-    const buff = [];
-    arr.forEach((elem) => {
-      buff.push({ label: elem.name, value: elem._id });
-      // console.log("buff", buff);
-    });
-    return buff;
-  };
   useEffect(() => {
-    api.users.getById(id).then((user) => {
-      setUser(user);
-      if (user === null || user === undefined) {
-        setMessage("Пользователь не найден");
-      } else {
-        data.name = user.name;
-        data.email = user.email;
-        data.profession = user.profession._id;
-        data.sex = user.sex;
-        data.qualities = setUserQualities(user.qualities);
-        setData(data);
-        validate();
-      }
-    });
-  }, []);
+    if (!isLoadingQual && !isLoadingProf) {
+      setData((prevState) => ({
+        ...prevState,
+        name: user.name,
+        email: user.email,
+        sex: user.sex,
+        profession: user.profession,
+        qualities: setUserQualities(user.qualities)
+      }));
+      // validate();
+    }
+  }, [isLoadingQual, isLoadingProf]);
   useEffect(() => {
     validate();
+    setLoadingUserData(!isLoadingQual && !isLoadingProf);
   }, [data]);
-  useEffect(() => {
-    api.professions.fetchAll().then((data) => setProfession(data));
-    api.qualities.fetchAll().then((data) => setQualities(data));
-  }, []);
-
-  if (user === null || user === undefined) {
-    return message;
-  }
 
   const isValid = Object.keys(errors).length === 0;
 
-  const getProfessionById = (id) => {
-    // for (const prof of professions) {
-    //   if (prof.value === id) {
-    //     return { _id: prof.value, name: prof.label };
-    //   }
-    // }
-    const buff = Object.keys(professions).find(
-      (prof) => professions[prof]._id === id
-    );
-    return { ...professions[buff] };
-  };
-  const getQualities = (elements) => {
-    const qualitiesArray = [];
-    for (const elem of elements) {
-      for (const quality in qualities) {
-        // if (elem.value === qualities[quality].value) {
-        if (elem.value === qualities[quality]._id) {
-          qualitiesArray.push({
-            // _id: qualities[quality].value,
-            // name: qualities[quality].label,
-            _id: qualities[quality]._id,
-            name: qualities[quality].name,
-            color: qualities[quality].color
-          });
-        }
-      }
-    }
-    return qualitiesArray;
-  };
   const handleChange = (target) => {
     setData((prevState) => ({ ...prevState, [target.name]: target.value }));
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const isValid = validate();
     if (isValid) return;
-    const { profession, qualities } = data;
     user.name = data.name;
     user.email = data.email;
     user.sex = data.sex;
-    user.profession = getProfessionById(profession);
-    user.qualities = getQualities(qualities);
-    setUser(user);
-    api.users.update(id, user);
-    history.push("/Users");
+    user.profession = data.profession;
+    user.qualities = data.qualities.map((q) => q.value);
+    console.log("id, user", id, user);
+    try {
+      await updateUser(user);
+      history.push("/Users");
+    } catch (error) {
+      setErrors(error);
+    }
   };
-
+  if (!isLoading) {
+    return <h5>Получение данных пользователя....</h5>;
+  }
   return (
     <div className="container mt-5">
       <div className="row">
@@ -156,7 +157,7 @@ const EditUserPage = ({ id }) => {
               name="name"
               value={data.name}
               onChange={handleChange}
-              error={undefined}
+              error={errors.name}
             />
             <TextField
               label="Электронная почта"
@@ -194,6 +195,7 @@ const EditUserPage = ({ id }) => {
               defaultValue={data.qualities}
               error={errors.qualities}
             />
+            {/* {console.log("data.qualities", data.qualities)} */}
             <button
               type="submit"
               disabled={!isValid}

@@ -10,7 +10,7 @@ import Profession from "./profession";
 
 const UserTable = ({
   users,
-  onDelete,
+  // onDelete,
   handelMark,
   count,
   handleSort,
@@ -46,17 +46,17 @@ const UserTable = ({
           bookmark={user.bookmark}
         />
       )
-    },
-    delete: {
-      component: (user) => (
-        <button
-          className="btn btn-danger btn-sm m-2"
-          onClick={() => onDelete(user._id)}
-        >
-          delete
-        </button>
-      )
     }
+    // delete: {
+    //   component: (user) => (
+    //     <button
+    //       className="btn btn-danger btn-sm m-2"
+    //       onClick={() => onDelete(user._id)}
+    //     >
+    //       delete
+    //     </button>
+    //   )
+    // }
   };
 
   return (
@@ -83,7 +83,7 @@ const UserTable = ({
 
 UserTable.propTypes = {
   users: PropTypes.array.isRequired,
-  onDelete: PropTypes.func.isRequired,
+  // onDelete: PropTypes.func.isRequired,
   handelMark: PropTypes.func.isRequired,
   count: PropTypes.number.isRequired,
   handleSort: PropTypes.func.isRequired,

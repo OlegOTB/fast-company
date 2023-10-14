@@ -10,6 +10,8 @@ import { ToastContainer } from "react-toastify";
 import ProfessionProvider from "./hooks/useProfession";
 import QualitiesProvider from "./hooks/useQualities";
 import AuthProvider from "./hooks/useAuth";
+import ProtectedRoute from "./components/common/protectedRoute";
+import LogOut from "./layouts/logOut";
 // import UserCard from "./components/userCard";
 // import NotFound from "./components/not-found";
 
@@ -21,7 +23,7 @@ const App = () => {
         <QualitiesProvider>
           <ProfessionProvider>
             <Switch>
-              <Route path="/Users/:userId?/:edit?" component={Users} />
+              <ProtectedRoute path="/Users/:userId?/:edit?" component={Users} />
               <Route
                 path="/Users/:userId?"
                 component={Users}
@@ -30,6 +32,7 @@ const App = () => {
               {/* <Route exact path="/Users" component={UsersList} /> */}
               {/* <Route path="/Main" component={Main} /> */}
               <Route path="/Login:type?" component={Login} />
+              <Route path="/logout" component={LogOut} />
               {/* <Route path="/404" component={NotFound} /> */}
               {/* <Redirect to="404" /> */}
               <Route path="/" exact component={Main} />

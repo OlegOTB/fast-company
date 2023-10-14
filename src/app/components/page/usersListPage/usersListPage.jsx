@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import api from "../../../api";
+import React, { useState } from "react";
 
 import SumUser from "../../ui/sumUser";
 import Pagination from "../../common/paginations";
@@ -9,25 +8,18 @@ import _ from "lodash";
 import UserTable from "../../ui/usersTable";
 import TextField from "../../common/form/textField";
 import { useUser } from "../../../hooks/useUsers";
+import { useProfessions } from "../../../hooks/useProfession";
+import { useAuth } from "../../../hooks/useAuth";
 
 const UsersListPage = () => {
+  const { currentUser } = useAuth();
   const { users } = useUser();
+  const { isLoading: professionsLoading, professions } = useProfessions();
+  // console.log(professionsLoading, professions);
   const [, setUsersRerender] = useState(false);
-  // const [usersLoad, setUsersLoad] = useState(false);
-  // const [allUsers, setUsers] = useState();
-
-  // useEffect(() => {
-  //   api.users.fetchAll().then((data) => {
-  //     setUsers(data);
-  //     if (data !== null || data !== undefined) {
-  //       setUsersLoad(true);
-  //     }
-  //   });
-  // }, []);
   const pageSize = 4;
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [professions, setProfession] = useState();
   const [selectedProf, setselectedProf] = useState();
   const [sortBy, setSortBy] = useState({
     iter: "name",
@@ -36,9 +28,6 @@ const UsersListPage = () => {
   });
   const [serchString, setSearchString] = useState("");
 
-  useEffect(() => {
-    api.professions.fetchAll().then((data) => setProfession(data));
-  }, []);
   const handelDelete = (id) => {
     // const newUsers = users.filter((c) => c._id !== id);
     // const newUsers = allUsers.filter((c) => c._id !== id);
@@ -73,30 +62,22 @@ const UsersListPage = () => {
     if (target.value !== "") setselectedProf();
   };
 
-  let filteredUsers = [];
-  // if (allUsers) {
-  //   filteredUsers = selectedProf
-  //     ? allUsers.filter((user) => _.isEqual(user.profession, selectedProf))
-  //     : allUsers;
-  //   filteredUsers =
-  //     serchString !== ""
-  //       ? allUsers.filter((user) =>
-  //           user.name.toLowerCase().includes(serchString.toLowerCase())
-  //         )
-  //       : filteredUsers;
-  // }
-  if (users) {
-    filteredUsers = selectedProf
-      ? users.filter((user) => _.isEqual(user.profession, selectedProf))
-      : users;
-    filteredUsers =
-      serchString !== ""
-        ? users.filter((user) =>
-            user.name.toLowerCase().includes(serchString.toLowerCase())
-          )
-        : filteredUsers;
+  function filterUsers(data) {
+    let filteredUsers = [];
+    if (data) {
+      filteredUsers = selectedProf
+        ? data.filter((user) => _.isEqual(user.profession, selectedProf))
+        : data;
+      filteredUsers =
+        serchString !== ""
+          ? data.filter((user) =>
+              user.name.toLowerCase().includes(serchString.toLowerCase())
+            )
+          : filteredUsers;
+    }
+    return filteredUsers.filter((u) => u._id !== currentUser._id);
   }
-
+  const filteredUsers = filterUsers(users);
   const count = filteredUsers.length;
   if (count === 0) {
     return "Загрузка пользователей";
@@ -114,7 +95,7 @@ const UsersListPage = () => {
   return (
     <>
       <div className="d-flex">
-        {professions && (
+        {professions && !professionsLoading && (
           <div className="d-flex flex-column flex-shrink-0 p-3">
             <GroupList
               selectedItem={selectedProf}

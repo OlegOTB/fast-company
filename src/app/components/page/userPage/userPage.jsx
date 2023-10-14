@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import api from "../../../api";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import { cardBody } from "../../../utils/cardBody";
@@ -7,40 +6,44 @@ import Qualities from "../../ui/qualities";
 import InfoCard from "../../ui/infoCard";
 import CommentsCard from "../../ui/CommentsCard/commentsCard";
 import PropTypes from "prop-types";
+import { useUser } from "../../../hooks/useUsers";
+import CommentsProvider from "../../../hooks/useComments";
+import { useProfessions } from "../../../hooks/useProfession";
 
 const UserPage = ({ id }) => {
   // if (id === undefined) return;
+
   const history = useHistory();
   const handleClick = () => {
     history.push("/Users");
   };
-
-  const [message, setMessage] = useState("Поиск пользователя");
-  const [data, setData] = useState();
+  const { getUserById } = useUser();
+  const [isLoading, setIsLoading] = useState(false);
+  const { isLoading: isLoadingProf, getProfession } = useProfessions();
   useEffect(() => {
-    api.users.getById(id).then((data) => {
-      setData(data);
-      if (data === null || data === undefined) {
-        setMessage("Пользователь не найден");
-      }
-    });
-  }, []);
-
+    if (!isLoadingProf) setIsLoading(true);
+  }, [isLoadingProf]);
+  const data = getUserById(id);
   if (data === null || data === undefined) {
-    return message;
+    return "Поиск пользователя";
   }
   const columns = {
+    image: {
+      path: "image",
+      name: "Фото"
+    },
     name: {
       path: "name",
       name: "Имя"
     },
     professions: {
-      path: "profession.name",
-      name: "Профессия"
+      // path: "profession.name",
+      name: "Профессия",
+      component: (user) => getProfession(user.profession).name
     },
     qualities: {
       name: "Качества",
-      component: (user) => <Qualities qualities={user.qualities} />
+      component: (user) => <Qualities qualitiesId={user.qualities} />
     },
     completedMeetings: {
       path: "completedMeetings",
@@ -48,13 +51,17 @@ const UserPage = ({ id }) => {
     },
     rate: { path: "rate", name: "Оценка" }
   };
+  if (!isLoading) return <h5>Загрузка формы...</h5>;
   const objUser = cardBody(data, columns);
   return (
     <>
       <div className="container">
         <div className="row gutters-sm">
           <InfoCard id={id} objUser={objUser} />
-          <CommentsCard pageId={id} />
+          <CommentsProvider>
+            {/* pageId={id} */}
+            <CommentsCard />
+          </CommentsProvider>
         </div>
       </div>
       <button onClick={handleClick} className={"btn btn-secondary btn-sm  m-2"}>

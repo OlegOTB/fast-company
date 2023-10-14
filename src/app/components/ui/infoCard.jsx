@@ -1,24 +1,24 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import { useAuth } from "../../hooks/useAuth";
 
 const InfoCard = ({ id, objUser }) => {
+  const { currentUser } = useAuth();
   return (
     <div className="col-md-4 mb-3">
       <div className="card mb-3">
         <div className="card-body">
-          <Link to={`/Users/${id}/edit`}>
-            <button className="position-absolute top-0 end-0 btn btn-light btn-sm">
-              <i className="bi bi-gear"></i>
-            </button>
-          </Link>
+          {currentUser._id === id && (
+            <Link to={`/Users/${id}/edit`}>
+              <button className="position-absolute top-0 end-0 btn btn-light btn-sm">
+                <i className="bi bi-gear"></i>
+              </button>
+            </Link>
+          )}
           <div className="d-flex flex-column align-items-center text-center position-relative">
             <img
-              src={`https://avatars.dicebear.com/api/avataaars/${(
-                Math.random() + 1
-              )
-                .toString(36)
-                .substring(7)}.svg`}
+              src={objUser.image}
               className="rounded-circle shadow-1-strong me-3"
               alt="avatar"
               width="65"
