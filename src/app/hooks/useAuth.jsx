@@ -81,7 +81,8 @@ const AuthProvider = ({ children }) => {
 
   async function updateUser(user) {
     try {
-      await userService.create(user);
+      const { content } = await userService.update(user);
+      settUser(content);
     } catch (error) {
       errorCatcher(error);
     }

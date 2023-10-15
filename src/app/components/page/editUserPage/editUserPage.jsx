@@ -138,7 +138,7 @@ const EditUserPage = ({ id }) => {
     console.log("id, user", id, user);
     try {
       await updateUser(user);
-      history.push("/Users");
+      history.push(`/Users/${id}`);
     } catch (error) {
       setErrors(error);
     }
