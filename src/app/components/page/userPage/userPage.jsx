@@ -8,7 +8,10 @@ import CommentsCard from "../../ui/CommentsCard/commentsCard";
 import PropTypes from "prop-types";
 import { useUser } from "../../../hooks/useUsers";
 import CommentsProvider from "../../../hooks/useComments";
-import { useProfessions } from "../../../hooks/useProfession";
+// import { useProfessions } from "../../../hooks/useProfession";
+import { useSelector } from "react-redux";
+import { getProfessionsLoadingStatus } from "../../../store/profession";
+import Profession from "../../ui/profession";
 
 const UserPage = ({ id }) => {
   // if (id === undefined) return;
@@ -19,7 +22,10 @@ const UserPage = ({ id }) => {
   };
   const { getUserById } = useUser();
   const [isLoading, setIsLoading] = useState(false);
-  const { isLoading: isLoadingProf, getProfession } = useProfessions();
+  // const { isLoading: isLoadingProf, getProfession } = useProfessions();
+
+  const isLoadingProf = useSelector(getProfessionsLoadingStatus());
+
   useEffect(() => {
     if (!isLoadingProf) setIsLoading(true);
   }, [isLoadingProf]);
@@ -39,7 +45,7 @@ const UserPage = ({ id }) => {
     professions: {
       // path: "profession.name",
       name: "Профессия",
-      component: (user) => getProfession(user.profession).name
+      component: (user) => <Profession id={user.profession} />
     },
     qualities: {
       name: "Качества",

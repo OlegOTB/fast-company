@@ -8,13 +8,20 @@ import _ from "lodash";
 import UserTable from "../../ui/usersTable";
 import TextField from "../../common/form/textField";
 import { useUser } from "../../../hooks/useUsers";
-import { useProfessions } from "../../../hooks/useProfession";
+// import { useProfessions } from "../../../hooks/useProfession";
 import { useAuth } from "../../../hooks/useAuth";
+import {
+  getProfessions,
+  getProfessionsLoadingStatus
+} from "../../../store/profession";
+import { useSelector } from "react-redux";
 
 const UsersListPage = () => {
   const { currentUser } = useAuth();
   const { users } = useUser();
-  const { isLoading: professionsLoading, professions } = useProfessions();
+  // const { isLoading: professionsLoading, professions } = useProfessions();
+  const professionsLoading = useSelector(getProfessionsLoadingStatus());
+  const professions = useSelector(getProfessions());
   // console.log(professionsLoading, professions);
   const [, setUsersRerender] = useState(false);
   const pageSize = 4;

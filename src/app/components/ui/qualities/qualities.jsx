@@ -1,9 +1,22 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { useQualities } from "../../../hooks/useQualities";
+import {
+  getQualitiesLoadingStatus,
+  getQualitieById
+} from "../../../store/qualities";
+import { useSelector } from "react-redux";
+// import { useQualities } from "../../../hooks/useQualities";
 
 const Qualities = ({ qualitiesId }) => {
-  const { isLoading, getQualities } = useQualities();
+  if (
+    qualitiesId === null ||
+    qualitiesId === undefined ||
+    qualitiesId.length === 0
+  ) {
+    return;
+  }
+  const isLoading = useSelector(getQualitiesLoadingStatus());
+  // const { isLoading, getQualities } = useQualities();
   const getBageClasses = (color) => {
     return "badge m-2 bg-" + color;
   };
@@ -12,7 +25,8 @@ const Qualities = ({ qualitiesId }) => {
       // <span key={qualitie._id} className={getBageClasses(qualitie.color)}>
       //   {qualitie.name}
       // </span>
-      const qualitie = getQualities(id);
+      // const qualitie = getQualities(id);
+      const qualitie = useSelector(getQualitieById(id));
       return (
         <span key={id} className={getBageClasses(qualitie.color)}>
           {qualitie.name}

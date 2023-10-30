@@ -6,14 +6,23 @@ import SelectField from "../common/form/selectField";
 import RadioField from "../common/form/radioField";
 import MultiSelectField from "../common/form/multiSelectField";
 import CheckBoxField from "../common/form/checkBoxField";
-import { useQualities } from "../../hooks/useQualities";
-import { useProfessions } from "../../hooks/useProfession";
+// import { useQualities } from "../../hooks/useQualities";
+// import { useProfessions } from "../../hooks/useProfession";
 import { useAuth } from "../../hooks/useAuth";
 import { useHistory } from "react-router-dom";
+import { getQualities, getQualitiesLoadingStatus } from "../../store/qualities";
+import { useSelector } from "react-redux";
+import {
+  getProfessions,
+  getProfessionsLoadingStatus
+} from "../../store/profession";
 
 const RegisterForm = () => {
   const history = useHistory();
-  const { isLoading: isLoadingQual, qualities: qual } = useQualities();
+  // const { isLoading: isLoadingQual, qualities: qual } = useQualities();
+  const qual = useSelector(getQualities());
+  const isLoadingQual = useSelector(getQualitiesLoadingStatus());
+
   const qualities = !isLoadingQual
     ? qual?.map((q) => {
         return { label: q.name, value: q._id };
@@ -30,7 +39,9 @@ const RegisterForm = () => {
   });
   const { signUp } = useAuth();
   const [errors, setErrors] = useState({});
-  const { isLoading: isLoadingProf, professions: prof } = useProfessions();
+  // const { isLoading: isLoadingProf, professions: prof } = useProfessions();
+  const prof = useSelector(getProfessions());
+  const isLoadingProf = useSelector(getProfessionsLoadingStatus());
   // console.log(prof);
   const professions = !isLoadingProf
     ? prof?.map((p) => {

@@ -6,10 +6,19 @@ import SelectField from "../../common/form/selectField";
 import RadioField from "../../common/form/radioField";
 import MultiSelectField from "../../common/form/multiSelectField";
 import PropTypes from "prop-types";
-import { useQualities } from "../../../hooks/useQualities";
-import { useProfessions } from "../../../hooks/useProfession";
+// import { useProfessions } from "../../../hooks/useProfession";
 import { useUser } from "../../../hooks/useUsers";
 import { useAuth } from "../../../hooks/useAuth";
+import {
+  getQualities,
+  getQualitiesLoadingStatus
+} from "../../../store/qualities";
+import { useSelector } from "react-redux";
+import {
+  getProfessions,
+  getProfessionsLoadingStatus
+} from "../../../store/profession";
+// import { useQualities } from "../../../hooks/useQualities";
 
 const EditUserPage = ({ id }) => {
   if (!id) return;
@@ -25,30 +34,38 @@ const EditUserPage = ({ id }) => {
   if (currentUser._id !== id) {
     history.push(`/Users/${currentUser._id}/edit`);
   }
-  const setUserQualities = (arr) => {
-    const buff = [];
-    arr.forEach((elem) => {
-      buff.push({
-        label: getQualities(elem).name,
-        value: getQualities(elem)._id
-      });
-      // console.log("buff", buff);
-    });
-    return buff;
-  };
-  const {
-    isLoading: isLoadingQual,
-    qualities: qual,
-    getQualities
-  } = useQualities();
+  const qual = useSelector(getQualities());
+  const isLoadingQual = useSelector(getQualitiesLoadingStatus());
+  // const {
+  //   isLoading: isLoadingQual,
+  //   qualities: qual,
+  //   getQualities
+  // } = useQualities();
   const qualities = !isLoadingQual
     ? qual?.map((q) => {
         return { label: q.name, value: q._id };
       })
     : [];
+  function getQualitiesListByIds(qualitiesIds) {
+    const qualitiesArray = [];
+    for (const qualId of qualitiesIds) {
+      for (const quality of qualities) {
+        if (quality.value === qualId) {
+          qualitiesArray.push(quality);
+          break;
+        }
+      }
+    }
+    return qualitiesArray;
+  }
+
   const [errors, setErrors] = useState({});
   const [isLoading, setLoadingUserData] = useState(false);
-  const { isLoading: isLoadingProf, professions: prof } = useProfessions();
+  // const { isLoading: isLoadingProf, professions: prof } = useProfessions();
+
+  const prof = useSelector(getProfessions());
+  const isLoadingProf = useSelector(getProfessionsLoadingStatus());
+
   // console.log(prof);
   const professions = !isLoadingProf
     ? prof?.map((p) => {
@@ -111,7 +128,7 @@ const EditUserPage = ({ id }) => {
         email: user.email,
         sex: user.sex,
         profession: user.profession,
-        qualities: setUserQualities(user.qualities)
+        qualities: getQualitiesListByIds(user.qualities)
       }));
       // validate();
     }
@@ -135,7 +152,7 @@ const EditUserPage = ({ id }) => {
     user.sex = data.sex;
     user.profession = data.profession;
     user.qualities = data.qualities.map((q) => q.value);
-    console.log("id, user", id, user);
+    // console.log("id, user", id, user);
     try {
       await updateUser(user);
       history.push(`/Users/${id}`);
