@@ -1,15 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import { useAuth } from "../../hooks/useAuth";
+// import { useAuth } from "../../hooks/useAuth";
+import { useSelector } from "react-redux";
+import { getCurrentUserId } from "../../store/users";
 
 const InfoCard = ({ id, objUser }) => {
-  const { currentUser } = useAuth();
+  // const { currentUser } = useAuth();
+  const currentUserId = useSelector(getCurrentUserId());
   return (
     <div className="col-md-4 mb-3">
       <div className="card mb-3">
         <div className="card-body">
-          {currentUser._id === id && (
+          {currentUserId === id && (
             <Link to={`/Users/${id}/edit`}>
               <button className="position-absolute top-0 end-0 btn btn-light btn-sm">
                 <i className="bi bi-gear"></i>

@@ -8,17 +8,19 @@ import MultiSelectField from "../common/form/multiSelectField";
 import CheckBoxField from "../common/form/checkBoxField";
 // import { useQualities } from "../../hooks/useQualities";
 // import { useProfessions } from "../../hooks/useProfession";
-import { useAuth } from "../../hooks/useAuth";
-import { useHistory } from "react-router-dom";
+// import { useAuth } from "../../hooks/useAuth";
+// import { useHistory } from "react-router-dom";
 import { getQualities, getQualitiesLoadingStatus } from "../../store/qualities";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getProfessions,
   getProfessionsLoadingStatus
 } from "../../store/profession";
+import { signUp } from "../../store/users";
 
 const RegisterForm = () => {
-  const history = useHistory();
+  const dispatch = useDispatch();
+  // const history = useHistory();
   // const { isLoading: isLoadingQual, qualities: qual } = useQualities();
   const qual = useSelector(getQualities());
   const isLoadingQual = useSelector(getQualitiesLoadingStatus());
@@ -37,7 +39,7 @@ const RegisterForm = () => {
     qualities: [],
     licence: false
   });
-  const { signUp } = useAuth();
+  // const { signUp } = useAuth();
   const [errors, setErrors] = useState({});
   // const { isLoading: isLoadingProf, professions: prof } = useProfessions();
   const prof = useSelector(getProfessions());
@@ -99,7 +101,7 @@ const RegisterForm = () => {
     // console.log(target.name, target.value);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const isValid = validate();
     if (isValid) return;
@@ -107,14 +109,10 @@ const RegisterForm = () => {
       ...data,
       qualities: data.qualities.map((q) => q.value)
     };
-    try {
-      await signUp(newdata);
-      history.push("/");
-    } catch (error) {
-      setErrors(error);
-    }
+    dispatch(signUp(newdata));
+    // await signUp(newdata);
+    // history.push("/");
   };
-
   return (
     <form onSubmit={handleSubmit}>
       <TextField

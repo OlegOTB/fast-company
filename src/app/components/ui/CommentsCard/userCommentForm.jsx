@@ -1,17 +1,20 @@
 import React, { useState } from "react";
 // import PropTypes from "prop-types";
 import { useComments } from "../../../hooks/useComments";
-import { useAuth } from "../../../hooks/useAuth";
+// import { useAuth } from "../../../hooks/useAuth";
 import { nanoid } from "nanoid";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { getCurrentUserId } from "../../../store/users";
 
 const UserCommentForm = () => {
   const { userId } = useParams();
   // console.log(userId);
-  const { currentUser } = useAuth();
+  // const { currentUser } = useAuth();
+  const currentUserId = useSelector(getCurrentUserId());
   const [comment, setComment] = useState({
     _id: nanoid(),
-    userId: currentUser._id,
+    userId: currentUserId,
     pageId: userId,
     content: "",
     created_at: ""
@@ -33,7 +36,7 @@ const UserCommentForm = () => {
     createComment(comment);
     setComment(() => ({
       _id: nanoid(),
-      userId: currentUser._id,
+      userId: currentUserId,
       pageId: userId,
       content: "",
       created_at: ""

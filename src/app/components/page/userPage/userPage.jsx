@@ -6,12 +6,13 @@ import Qualities from "../../ui/qualities";
 import InfoCard from "../../ui/infoCard";
 import CommentsCard from "../../ui/CommentsCard/commentsCard";
 import PropTypes from "prop-types";
-import { useUser } from "../../../hooks/useUsers";
+// import { useUser } from "../../../hooks/useUsers";
 import CommentsProvider from "../../../hooks/useComments";
 // import { useProfessions } from "../../../hooks/useProfession";
 import { useSelector } from "react-redux";
 import { getProfessionsLoadingStatus } from "../../../store/profession";
 import Profession from "../../ui/profession";
+import { getUserById } from "../../../store/users";
 
 const UserPage = ({ id }) => {
   // if (id === undefined) return;
@@ -20,7 +21,7 @@ const UserPage = ({ id }) => {
   const handleClick = () => {
     history.push("/Users");
   };
-  const { getUserById } = useUser();
+  // const { getUserById } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   // const { isLoading: isLoadingProf, getProfession } = useProfessions();
 
@@ -29,7 +30,8 @@ const UserPage = ({ id }) => {
   useEffect(() => {
     if (!isLoadingProf) setIsLoading(true);
   }, [isLoadingProf]);
-  const data = getUserById(id);
+  // const data = getUserById(id);
+  const data = useSelector(getUserById(id));
   if (data === null || data === undefined) {
     return "Поиск пользователя";
   }

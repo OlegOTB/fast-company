@@ -7,18 +7,21 @@ import GroupList from "../../common/groupList";
 import _ from "lodash";
 import UserTable from "../../ui/usersTable";
 import TextField from "../../common/form/textField";
-import { useUser } from "../../../hooks/useUsers";
+// import { useUser } from "../../../hooks/useUsers";
 // import { useProfessions } from "../../../hooks/useProfession";
-import { useAuth } from "../../../hooks/useAuth";
+// import { useAuth } from "../../../hooks/useAuth";
 import {
   getProfessions,
   getProfessionsLoadingStatus
 } from "../../../store/profession";
 import { useSelector } from "react-redux";
+import { getCurrentUserId, getUsers } from "../../../store/users";
 
 const UsersListPage = () => {
-  const { currentUser } = useAuth();
-  const { users } = useUser();
+  // const { currentUser } = useAuth();
+  const currentUserId = useSelector(getCurrentUserId());
+  // const { users } = useUser();
+  const users = useSelector(getUsers());
   // const { isLoading: professionsLoading, professions } = useProfessions();
   const professionsLoading = useSelector(getProfessionsLoadingStatus());
   const professions = useSelector(getProfessions());
@@ -82,7 +85,7 @@ const UsersListPage = () => {
             )
           : filteredUsers;
     }
-    return filteredUsers.filter((u) => u._id !== currentUser._id);
+    return filteredUsers.filter((u) => u._id !== currentUserId);
   }
   const filteredUsers = filterUsers(users);
   const count = filteredUsers.length;

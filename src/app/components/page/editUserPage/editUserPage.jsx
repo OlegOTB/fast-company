@@ -7,32 +7,41 @@ import RadioField from "../../common/form/radioField";
 import MultiSelectField from "../../common/form/multiSelectField";
 import PropTypes from "prop-types";
 // import { useProfessions } from "../../../hooks/useProfession";
-import { useUser } from "../../../hooks/useUsers";
-import { useAuth } from "../../../hooks/useAuth";
+// import { useUser } from "../../../hooks/useUsers";
+// import { useAuth } from "../../../hooks/useAuth";
 import {
   getQualities,
   getQualitiesLoadingStatus
 } from "../../../store/qualities";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getProfessions,
   getProfessionsLoadingStatus
 } from "../../../store/profession";
+import {
+  getCurrentUserId,
+  getUserById,
+  updateUser
+} from "../../../store/users";
 // import { useQualities } from "../../../hooks/useQualities";
 
 const EditUserPage = ({ id }) => {
   if (!id) return;
-  const { getUserById } = useUser();
-  const user = getUserById(id);
+  // const { getUserById } = useUser();
+  // const user = getUserById(id);
+  const dispatch = useDispatch();
+  const user = useSelector(getUserById(id));
+  // console.log(user);
   if (user === null || user === undefined) {
     return <h5>Пользователь не найден</h5>;
   }
   // console.log(user);
 
   const history = useHistory();
-  const { currentUser, updateUser } = useAuth();
-  if (currentUser._id !== id) {
-    history.push(`/Users/${currentUser._id}/edit`);
+  // const { updateUser } = useAuth();
+  const currentUserId = useSelector(getCurrentUserId());
+  if (currentUserId !== id) {
+    history.push(`/Users/${currentUserId}/edit`);
   }
   const qual = useSelector(getQualities());
   const isLoadingQual = useSelector(getQualitiesLoadingStatus());
@@ -143,19 +152,24 @@ const EditUserPage = ({ id }) => {
   const handleChange = (target) => {
     setData((prevState) => ({ ...prevState, [target.name]: target.value }));
   };
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const isValid = validate();
     if (isValid) return;
-    user.name = data.name;
-    user.email = data.email;
-    user.sex = data.sex;
-    user.profession = data.profession;
-    user.qualities = data.qualities.map((q) => q.value);
+    // user.name = data.name;
+    // user.email = data.email;
+    // user.sex = data.sex;
+    // user.profession = data.profession;
+    // user.qualities = data.qualities.map((q) => q.value);
+    const newData = {
+      ...user,
+      ...data,
+      qualities: data.qualities.map((q) => q.value)
+    };
     // console.log("id, user", id, user);
     try {
-      await updateUser(user);
-      history.push(`/Users/${id}`);
+      // await updateUser(user);
+      dispatch(updateUser(newData));
     } catch (error) {
       setErrors(error);
     }
