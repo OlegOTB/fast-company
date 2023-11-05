@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 // import PropTypes from "prop-types";
-import { useComments } from "../../../hooks/useComments";
+// import { useComments } from "../../../hooks/useComments";
 // import { useAuth } from "../../../hooks/useAuth";
 import { nanoid } from "nanoid";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUserId } from "../../../store/users";
+import { createComment } from "../../../store/comments";
 
 const UserCommentForm = () => {
   const { userId } = useParams();
@@ -20,7 +21,8 @@ const UserCommentForm = () => {
     created_at: ""
   });
   const [isValid, setIsValid] = useState(false);
-  const { createComment } = useComments();
+  // const { createComment } = useComments();
+  const dispatch = useDispatch();
 
   const handleChangeTextArea = ({ target }) => {
     setComment((prevState) => ({
@@ -33,7 +35,8 @@ const UserCommentForm = () => {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    createComment(comment);
+    dispatch(createComment(comment));
+    // createComment(comment);
     setComment(() => ({
       _id: nanoid(),
       userId: currentUserId,

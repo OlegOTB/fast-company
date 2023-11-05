@@ -2,7 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import {
   getQualitiesLoadingStatus,
-  getQualitieById
+  // getQualitieById,
+  getQualities
 } from "../../../store/qualities";
 import { useSelector } from "react-redux";
 // import { useQualities } from "../../../hooks/useQualities";
@@ -16,24 +17,28 @@ const Qualities = ({ qualitiesId }) => {
     return;
   }
   const isLoading = useSelector(getQualitiesLoadingStatus());
+  const qualitiesList = useSelector(getQualities());
   // const { isLoading, getQualities } = useQualities();
   const getBageClasses = (color) => {
     return "badge m-2 bg-" + color;
   };
-  if (!isLoading) {
-    return qualitiesId.map((id) => {
-      // <span key={qualitie._id} className={getBageClasses(qualitie.color)}>
-      //   {qualitie.name}
-      // </span>
-      // const qualitie = getQualities(id);
-      const qualitie = useSelector(getQualitieById(id));
-      return (
-        <span key={id} className={getBageClasses(qualitie.color)}>
-          {qualitie.name}
-        </span>
-      );
-    });
-  } else return "loading...";
+  return !isLoading
+    ? qualitiesId.map((id) => {
+        // <span key={qualitie._id} className={getBageClasses(qualitie.color)}>
+        //   {qualitie.name}
+        // </span>
+        // const qualitie = getQualities(id);
+
+        // const qualitie = useSelector(getQualitieById(id));
+
+        const qualitie = qualitiesList.find((p) => p._id === id);
+        return (
+          <span key={id} className={getBageClasses(qualitie.color)}>
+            {qualitie.name}
+          </span>
+        );
+      })
+    : "loading...";
 };
 
 Qualities.propTypes = {
